@@ -1,5 +1,5 @@
 # 基于现有的后端镜像
-FROM fast_pipeline_server AS fast_pipeline_server_with_nginx
+FROM fast_pipeline_server:latest AS fast_pipeline_server_with_nginx
 
 # 安装 Nginx
 RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*

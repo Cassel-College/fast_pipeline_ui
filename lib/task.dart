@@ -29,49 +29,105 @@ class _TaskPageState extends State<TaskPage> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    _loadTaskNames();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('任务列表'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: _loadTaskNames,
-              child: Text('刷新任务列表'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              ),
-            ),
-          ),
-          Expanded(
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : _taskNames.isEmpty
-                    ? Center(child: Text('No tasks available'))
-                    : ListView.builder(
-                        itemCount: _taskNames.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            elevation: 2,
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            child: ListTile(
-                              leading: Icon(Icons.task_alt, color: Colors.blue),
-                              title: Text(_taskNames[index]),
-                              trailing: Icon(Icons.arrow_forward_ios),
-                              onTap: () =>
-                                  _navigateToTaskDetail(_taskNames[index]),
-                            ),
-                          );
-                        },
-                      ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _loadTaskNames,
           ),
         ],
+      ),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : _taskNames.isEmpty
+              ? Center(child: Text('No tasks available'))
+              : ListView.builder(
+                  itemCount: _taskNames.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      elevation: 2,
+                      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: ListTile(
+                        leading: Icon(Icons.task_alt, color: Colors.blue),
+                        title: Text(_taskNames[index]),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildActionButton(
+                                '查看',
+                                bColor: const Color.fromARGB(255, 242, 232, 46),
+                                () => _navigateToPage(
+                                    _taskNames[index],
+                                    DefaultEmptyPage(
+                                        taskName: _taskNames[index],
+                                        context: context))),
+                            SizedBox(width: 8), // 添加间隔
+                            _buildActionButton(
+                                '执行',
+                                bColor: Colors.green,
+                                () => _navigateToPage(
+                                    _taskNames[index],
+                                    DefaultEmptyPage(
+                                        taskName: _taskNames[index],
+                                        context: context))),
+                            SizedBox(width: 8), // 添加间隔
+                            _buildActionButton(
+                                '编辑',
+                                bColor: const Color.fromARGB(255, 62, 130, 247),
+                                () => _navigateToPage(
+                                    _taskNames[index],
+                                    DefaultEmptyPage(
+                                        taskName: _taskNames[index],
+                                        context: context))),
+                            SizedBox(width: 8), // 添加间隔
+                            _buildActionButton(
+                                '删除',
+                                bColor: const Color.fromARGB(255, 219, 34, 34),
+                                () => _navigateToPage(
+                                    _taskNames[index],
+                                    DefaultEmptyPage(
+                                        taskName: _taskNames[index],
+                                        context: context))),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+    );
+  }
+
+  Widget _buildActionButton(String label, VoidCallback onPressed,
+      {Color? bColor}) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Text(label),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: bColor ?? Colors.green,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        minimumSize: Size(60, 30),
+      ),
+    );
+  }
+
+  void _navigateToPage(String taskName, Widget? page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            page ?? DefaultEmptyPage(taskName: taskName, context: context),
       ),
     );
   }
@@ -101,12 +157,42 @@ class _TaskPageState extends State<TaskPage> {
     }
   }
 
-  void _navigateToTaskDetail(String taskName) {
-    Navigator.push(
-      widget.context ?? context,
-      MaterialPageRoute(
-        builder: (context) => TaskDetailPage(taskName: taskName),
+  // ... 保留原有的 _loadTaskNames 方法 ...
+}
+
+class DefaultEmptyPage extends StatelessWidget {
+  final String taskName;
+  final BuildContext context;
+
+  const DefaultEmptyPage(
+      {Key? key, required this.taskName, required this.context})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('默认页面')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('这是 $taskName 的默认页面'),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('返回'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
+// TODO: 实现 ViewTaskPage, ExecuteTaskPage, EditTaskPage, DeleteTaskPage
