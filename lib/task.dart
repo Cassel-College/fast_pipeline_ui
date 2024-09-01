@@ -15,7 +15,9 @@ import 'package:fast_pipeline_ui/task_detail_page.dart';
 // 3. 该页面被点击时，请求网络数据，并展示在列表中
 
 class TaskPage extends StatefulWidget {
-  const TaskPage({Key? key}) : super(key: key);
+  final BuildContext? context;
+
+  const TaskPage({Key? key, this.context}) : super(key: key);
 
   @override
   _TaskPageState createState() => _TaskPageState();
@@ -93,7 +95,7 @@ class _TaskPageState extends State<TaskPage> {
         _taskNames = [];
         _isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(widget.context ?? context).showSnackBar(
         SnackBar(content: Text('Error loading tasks')),
       );
     }
@@ -101,7 +103,7 @@ class _TaskPageState extends State<TaskPage> {
 
   void _navigateToTaskDetail(String taskName) {
     Navigator.push(
-      context,
+      widget.context ?? context,
       MaterialPageRoute(
         builder: (context) => TaskDetailPage(taskName: taskName),
       ),
