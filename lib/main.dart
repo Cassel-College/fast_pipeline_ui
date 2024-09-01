@@ -1,4 +1,5 @@
 import 'package:fast_pipeline_ui/about.dart';
+import 'package:fast_pipeline_ui/add_task.dart';
 import 'package:fast_pipeline_ui/task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,7 +30,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('任务管理器'),
+        title: Text('Auto Task Manager'),
         centerTitle: true,
       ),
       body: ListView(
@@ -40,7 +41,7 @@ class HomePage extends StatelessWidget {
             '创建任务',
             Colors.green,
             Colors.green[100]!,
-            page: TaskPage(context: context), // 指定跳转页面
+            page: AddTaskPage(context: context), // 指定跳转页面
           ),
           _buildListTile(
             context,

@@ -1,1 +1,1 @@
-docker build -t fast_pipeline_app .
+docker build --no-cache -t fast_pipeline_app .
