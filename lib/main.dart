@@ -1,85 +1,113 @@
+import 'package:fast_pipeline_ui/about.dart';
 import 'package:fast_pipeline_ui/task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'SecondRoute.dart';
+import 'package:flutter/material.dart';
+import 'package:fast_pipeline_ui/task.dart'; // 引入 TaskPage
 
 void main() {
-  runApp(const MyApp());
+  runApp(TaskManagerApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+class TaskManagerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo 001',
+      title: '任务管理器',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page 001'),
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text('任务管理器'),
+        centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            Center(
-              child: CupertinoButton(
-                child: const Text('Open route'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(builder: (context) => const TaskPage()),
-                  );
-                },
-              ),
-            ),
-          ],
+      body: ListView(
+        children: [
+          _buildListTile(
+            context,
+            Icons.add,
+            '创建任务',
+            Colors.green,
+            Colors.green[100]!,
+            page: TaskPage(context: context), // 指定跳转页面
+          ),
+          _buildListTile(
+            context,
+            Icons.list,
+            '查看所有任务',
+            Colors.blue,
+            Colors.blue[100]!,
+            page: TaskPage(context: context),
+          ),
+          _buildListTile(
+            context,
+            Icons.history,
+            '运行日志',
+            Colors.orange,
+            Colors.orange[100]!,
+            page: TaskPage(context: context),
+          ),
+          _buildListTile(
+            context,
+            Icons.settings,
+            '设置',
+            Colors.purple,
+            Colors.purple[100]!,
+            page: TaskPage(context: context),
+          ),
+          _buildListTile(
+            context,
+            Icons.info,
+            '关于',
+            Colors.red,
+            Colors.red[100]!,
+            page: AboutPage(context: context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListTile(
+    BuildContext context,
+    IconData icon,
+    String title,
+    Color iconColor,
+    Color backgroundColor, {
+    Widget? page, // 使用可选的跳转页面参数
+  }) {
+    return Container(
+      color: backgroundColor,
+      child: ListTile(
+        leading: Icon(icon, size: 30, color: iconColor),
+        title: Text(
+          title,
+          style: TextStyle(fontSize: 18),
         ),
+        onTap: () {
+          _navigateToPage(context, page);
+        },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  void _navigateToPage(BuildContext context, Widget? page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => page ?? TaskPage(context: context),
+      ),
     );
   }
 }
