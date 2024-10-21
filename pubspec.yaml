@@ -40,6 +40,7 @@ dependencies:
   universal_html: ^2.2.4
 
   dio: ^5.0.0  # 使用最新版本
+  flutter_highlight: ^0.7.0
 
 dev_dependencies:
   flutter_test:

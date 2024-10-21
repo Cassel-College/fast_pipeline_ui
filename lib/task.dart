@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:fast_pipeline_ui/default_empty_page.dart';
+import 'package:fast_pipeline_ui/edit_task.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -67,7 +69,7 @@ class _TaskPageState extends State<TaskPage> {
                                 bColor: const Color.fromARGB(255, 242, 232, 46),
                                 () => _navigateToPage(
                                     _taskNames[index],
-                                    DefaultEmptyPage(
+                                    TaskDetailPage(
                                         taskName: _taskNames[index],
                                         context: context))),
                             SizedBox(width: 8), // 添加间隔
@@ -81,11 +83,20 @@ class _TaskPageState extends State<TaskPage> {
                                         context: context))),
                             SizedBox(width: 8), // 添加间隔
                             _buildActionButton(
+                                '日志',
+                                bColor: const Color.fromARGB(255, 230, 64, 233),
+                                () => _navigateToPage(
+                                    _taskNames[index],
+                                    DefaultEmptyPage(
+                                        taskName: _taskNames[index],
+                                        context: context))),
+                            SizedBox(width: 8), // 添加间隔
+                            _buildActionButton(
                                 '编辑',
                                 bColor: const Color.fromARGB(255, 62, 130, 247),
                                 () => _navigateToPage(
                                     _taskNames[index],
-                                    DefaultEmptyPage(
+                                    EditTaskPage(
                                         taskName: _taskNames[index],
                                         context: context))),
                             SizedBox(width: 8), // 添加间隔
@@ -140,7 +151,8 @@ class _TaskPageState extends State<TaskPage> {
       final response =
           await _httpTools.get('/api/v1/task/select_all_task_name');
       setState(() {
-        _taskNames = (response['data'] as List<dynamic>).cast<String>();
+        print(response);
+        _taskNames = (response['data']['folder_names'] as List<dynamic>).cast<String>();
         _isLoading = false;
       });
       print('Task names loaded: $_taskNames');
@@ -158,41 +170,6 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   // ... 保留原有的 _loadTaskNames 方法 ...
-}
-
-class DefaultEmptyPage extends StatelessWidget {
-  final String taskName;
-  final BuildContext context;
-
-  const DefaultEmptyPage(
-      {Key? key, required this.taskName, required this.context})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('默认页面')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('这是 $taskName 的默认页面'),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('返回'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 // TODO: 实现 ViewTaskPage, ExecuteTaskPage, EditTaskPage, DeleteTaskPage

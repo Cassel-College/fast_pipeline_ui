@@ -61,6 +61,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
       appBar: AppBar(
         title: Text('Add New Task'),
         backgroundColor: Colors.teal,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              // TODO: Implement refresh logic
+            },
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
